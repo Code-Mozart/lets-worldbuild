@@ -1,47 +1,78 @@
 <script lang="ts">
-  import svelteLogo from './assets/svelte.svg'
-  import viteLogo from '/vite.svg'
-  import Counter from './lib/Counter.svelte'
+  import { route } from "./lib/router";
+  import Toolbar from "./components/Toolbar.svelte";
+  import Dashboard from "./pages/Dashboard.svelte";
+  import Characters from "./pages/Characters.svelte";
+  import Locations from "./pages/Locations.svelte";
+  import Timeline from "./pages/Timeline.svelte";
+  import MapPage from "./pages/Map.svelte";
+  import View from "./pages/View.svelte";
+  import Settings from "./pages/Settings.svelte";
+
+  // subscribe to route store
+  let current: { page: string; params: Record<string, string> } = {
+    page: "dashboard",
+    params: {},
+  };
+  $: route.subscribe((r) => (current = r));
 </script>
 
-<main>
-  <div>
-    <a href="https://vite.dev" target="_blank" rel="noreferrer">
-      <img src={viteLogo} class="logo" alt="Vite Logo" />
-    </a>
-    <a href="https://svelte.dev" target="_blank" rel="noreferrer">
-      <img src={svelteLogo} class="logo svelte" alt="Svelte Logo" />
-    </a>
-  </div>
-  <h1>Vite + Svelte</h1>
+<div class="app">
+  <aside class="sidebar">
+    <h1>LoreLink</h1>
+    <nav>
+      <a href="#/dashboard">Dashboard</a>
+      <a href="#/characters">Characters</a>
+      <a href="#/locations">Locations</a>
+      <a href="#/timeline">Timeline</a>
+      <a href="#/map">Map</a>
+      <a href="#/settings">Settings</a>
+    </nav>
 
-  <div class="card">
-    <Counter />
-  </div>
+    <div style="margin-top:12px">
+      <Toolbar />
+    </div>
+  </aside>
 
-  <p>
-    Check out <a href="https://github.com/sveltejs/kit#readme" target="_blank" rel="noreferrer">SvelteKit</a>, the official Svelte app framework powered by Vite!
-  </p>
-
-  <p class="read-the-docs">
-    Click on the Vite and Svelte logos to learn more
-  </p>
-</main>
+  <main class="content">
+    {#if current.page === "characters"}
+      <Characters />
+    {:else if current.page === "locations"}
+      <Locations />
+    {:else if current.page === "timeline"}
+      <Timeline />
+    {:else if current.page === "map"}
+      <MapPage />
+    {:else if current.page === "view"}
+      <View params={current.params} />
+    {:else if current.page === "settings"}
+      <Settings />
+    {:else}
+      <Dashboard />
+    {/if}
+  </main>
+</div>
 
 <style>
-  .logo {
-    height: 6em;
-    padding: 1.5em;
-    will-change: filter;
-    transition: filter 300ms;
+  .app {
+    display: flex;
+    min-height: 100vh;
   }
-  .logo:hover {
-    filter: drop-shadow(0 0 2em #646cffaa);
+  .sidebar {
+    width: 260px;
+    padding: 16px;
+    border-right: 1px solid rgba(255, 255, 255, 0.04);
+    background: #0f1220;
   }
-  .logo.svelte:hover {
-    filter: drop-shadow(0 0 2em #ff3e00aa);
+  .content {
+    flex: 1;
+    padding: 20px;
+    overflow: auto;
   }
-  .read-the-docs {
-    color: #888;
+  nav a {
+    display: block;
+    padding: 6px 0;
+    color: var(--accent);
+    text-decoration: none;
   }
 </style>
