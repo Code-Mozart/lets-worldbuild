@@ -51,6 +51,7 @@
         filter: invert();
     }
     h1 {
+        margin-top: 2rem;
         padding: 0 1em;
         font-size: 1.5em;
         text-wrap: nowrap;

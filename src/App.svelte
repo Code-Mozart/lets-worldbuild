@@ -1,6 +1,7 @@
 <script lang="ts">
   import Page from "./components/Page.svelte";
   import Sidebar from "./components/Sidebar.svelte";
+  import { state } from "./lib/database.svelte";
   import { router } from "./lib/router.svelte";
 </script>
 
@@ -8,7 +9,7 @@
   <Sidebar bind:page={router.route} />
 
   <main class="content">
-    <Page bind:page={router.route} />
+    <Page bind:page={router.route} bind:projectID={state.projectID} />
   </main>
 </div>
 
@@ -19,7 +20,7 @@
   }
   .content {
     flex: auto 1 0;
-    padding: 1rem;
+    padding: 2rem;
     overflow: auto;
   }
 </style>

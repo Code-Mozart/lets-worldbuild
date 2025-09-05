@@ -3,7 +3,7 @@ import en from "../translations/en.json";
 export type Language = "en";
 let language: Language = $state("en");
 
-export const t = (key: string) => {
+export const t = (key: string, args: Record<string, unknown> = {}) => {
     const translations = {
         "en": en,
     }[language];
@@ -20,8 +20,17 @@ export const t = (key: string) => {
         }
         current = (current as object & { [next]: unknown })[next];
     });
-    return typeof current === "string" ? current : missingTranslation(key);
+    return typeof current === "string"
+        ? resolve(current, args)
+        : missingTranslation(key);
 };
+
+const resolve = (template: string, args: Record<string, unknown>) =>
+    Object.entries(args).reduce(
+        (acc, [placeholder, value]) =>
+            acc.replaceAll(`\\{${placeholder}\\}`, String(value)),
+        template,
+    );
 
 const missingTranslation = (key: string) => {
     console.warn(`missing translation for '${key}' in language ${language}`);

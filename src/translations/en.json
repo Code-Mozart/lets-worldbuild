@@ -3,5 +3,13 @@
     "pages": {
         "recent": "Recent",
         "characters": "Characters"
+    },
+    "gettingStarted": {
+        "firstProjectName": "My first project"
+    },
+    "actions": {
+        "characters": {
+            "add": "Add a new character"
+        }
     }
 }
