@@ -67,8 +67,15 @@
         margin: 0;
         padding: 0.5em;
     }
+    h2 {
+        margin: 0;
+        font-size: 1.5em;
+        line-height: 1.2;
+        font-weight: normal;
+    }
     li {
         padding: 0.8em;
+        cursor: pointer;
 
         display: flex;
         flex-direction: column;
@@ -80,7 +87,11 @@
     li:hover {
         color: var(--highlighted-foreground-color);
         background-color: var(--main-background-color);
-        border-color: var(--highlighted-foreground-color);
+        border: 3px solid var(--highlighted-foreground-color);
+        font-weight: bold;
+    }
+    li:hover h2 {
+        font-weight: bold;
     }
     li.new {
         text-align: center;
@@ -92,10 +103,5 @@
     li.new:hover svg {
         padding: 1em;
         --stroke-color: var(--highlighted-foreground-color);
-    }
-    h2 {
-        margin: 0;
-        font-size: 1.5em;
-        line-height: 1.2;
     }
 </style>

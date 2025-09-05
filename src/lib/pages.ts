@@ -1,6 +1,7 @@
 export const pages = {
     "recent": "recent",
     "characters": "characters",
+    "editCharacter": "editCharacter",
     // "locations": "locations",
     // "timeline": "timeline",
     // "map": "map",

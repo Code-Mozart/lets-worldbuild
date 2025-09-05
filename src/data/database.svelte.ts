@@ -1,24 +1,31 @@
-import { init } from "@paralleldrive/cuid2";
-import type { Database, ID, Project } from "./types";
-import { t } from "./i18n.svelte";
+import { t } from "../lib/i18n.svelte";
+import { makeDAO } from "./dao";
+import { cuid } from "./resource.svelte";
+import type { Project, Records } from "./schema";
 
 const localStorageKey = "lets-worldbuild/v1";
 
-export const createEmptyDatabase = () => {
-    return { projects: {} };
-};
+export interface Database {
+    projects: Records<Project>;
+}
 
-export const createID = init({ length: 8 });
-
-export const createInitialState = () => {
+export const createInitialProject = () => {
     const now = new Date();
-    const project: Project = {
-        id: createID(),
+    return {
+        id: cuid(),
         createdAt: now,
         updatedAt: now,
         name: t("gettingStarted.firstProjectName"),
         characters: {},
     };
+};
+
+export const createEmptyDatabase = () => {
+    return { projects: {} };
+};
+
+export const createInitialDatabase = () => {
+    const project = createInitialProject();
     return {
         projects: {
             [project.id]: project,
@@ -27,21 +34,15 @@ export const createInitialState = () => {
 };
 
 export const loadLocalStorage = (
-    fallback = createInitialState,
+    fallback = createInitialDatabase,
 ) => {
     const raw = localStorage.getItem(localStorageKey);
-    if (raw === null) return createInitialState();
+    if (raw === null) return fallback();
     return JSON.parse(raw) as Database;
 };
 
-export const getMostRecentProject = (database: Database) =>
-    Object.values(database.projects).sort((a, b) =>
-        a.updatedAt.getTime() - b.updatedAt.getTime()
-    )[0];
-
-class State {
+class DatabaseInitiator {
     database: Database;
-    projectID: ID;
 
     constructor() {
         this.database = $state(loadLocalStorage());
@@ -56,9 +57,11 @@ class State {
             });
             return () => {};
         });
+    }
 
-        this.projectID = getMostRecentProject(this.database).id;
+    get dataAccessor() {
+        return makeDAO(this.database);
     }
 }
 
-export const state = new State();
+export const database = new DatabaseInitiator().dataAccessor;

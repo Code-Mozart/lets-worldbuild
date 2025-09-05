@@ -1,3 +1,5 @@
+export type Records<T> = Record<ID, T>;
+
 export type ID = string;
 
 export interface Entity {
@@ -6,15 +8,9 @@ export interface Entity {
     updatedAt: Date;
 }
 
-export type Table<T> = Record<ID, T>;
-
-export interface Database {
-    projects: Table<Project>;
-}
-
 export interface Project extends Entity {
     name: string;
-    characters: Table<Character>;
+    characters: Records<Character>;
 }
 
 export interface Character extends Entity {
