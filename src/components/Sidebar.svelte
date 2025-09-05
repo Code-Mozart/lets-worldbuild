@@ -15,7 +15,7 @@
     <nav>
         {#each Object.entries(pages) as [key, value]}
             <a href="#/{value}" class:active={page === key}>
-                <img src={icons[key as Page]} />
+                <img src={icons[key as Page]} alt="{key} icon" />
                 {t(`pages.${value}`)}
             </a>
         {/each}
