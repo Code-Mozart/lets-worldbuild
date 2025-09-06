@@ -11,12 +11,14 @@ export type PredicateFn<T extends object> = (
     { key, value }: FnParameters<T>,
 ) => boolean;
 
-export const mapEntries = <T extends object, U>(obj: T, fn: MapFn<T, U>) =>
-    Object.fromEntries(
-        Object.entries(obj).map(
-            ([k, v]) => [k, fn({ key: k as keyof T, value: v as T[keyof T] })],
-        ),
-    ) as { [K in keyof T]: U };
+export const mapEntries = <T extends object, K extends PropertyKey, V>(
+    obj: T,
+    fn: MapFn<T, [K, V]>,
+) => Object.fromEntries(
+    Object.entries(obj).map(
+        ([k, v]) => fn({ key: k as keyof T, value: v as T[keyof T] }),
+    ),
+) as { [_ in K]: V };
 
 export const mapValues = <T extends object, U>(obj: T, fn: MapFn<T, U>) =>
     mapEntries(obj, ({ key, value }) => [key, fn({ key, value })]) as {
