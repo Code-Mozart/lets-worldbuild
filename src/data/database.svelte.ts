@@ -1,7 +1,7 @@
 import { init } from "@paralleldrive/cuid2";
 import { t } from "../lib/i18n.svelte";
 import { makeDAO } from "./dao";
-import type { Project, Records } from "./schema";
+import { type Project, projectShape, type Records, type Shape } from "./schema";
 
 const localStorageKey = "lets-worldbuild/v1";
 
@@ -10,6 +10,9 @@ export const cuid = init({ length: 8 });
 export interface Database {
     projects: Records<Project>;
 }
+export const databaseShape: Shape<Database> = {
+    projects: projectShape,
+};
 
 export const createInitialProject = () => {
     const now = new Date();
@@ -57,12 +60,11 @@ class DatabaseInitiator {
                     JSON.stringify(this.database),
                 );
             });
-            return () => {};
         });
     }
 
     get dataAccessor() {
-        return makeDAO(this.database);
+        return makeDAO(this.database, databaseShape);
     }
 }
 

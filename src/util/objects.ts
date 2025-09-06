@@ -1,101 +1,61 @@
-/**
- * Map over the values of an object.
- */
-export function mapValues<T extends object, U>(
-    obj: T,
-    fn: (value: T[keyof T], key: keyof T) => U,
-): { [K in keyof T]: U } {
-    return Object.fromEntries(
-        Object.entries(obj).map((
-            [k, v],
-        ) => [k, fn(v as T[keyof T], k as keyof T)]),
+export interface FnParameters<T, K = keyof T> {
+    key: K;
+    value: T[keyof T];
+}
+
+export type MapFn<T extends object, U> = (
+    { key, value }: FnParameters<T>,
+) => U;
+
+export type PredicateFn<T extends object> = (
+    { key, value }: FnParameters<T>,
+) => boolean;
+
+export const mapEntries = <T extends object, U>(obj: T, fn: MapFn<T, U>) =>
+    Object.fromEntries(
+        Object.entries(obj).map(
+            ([k, v]) => [k, fn({ key: k as keyof T, value: v as T[keyof T] })],
+        ),
     ) as { [K in keyof T]: U };
-}
 
-/**
- * Map over the keys of an object.
- */
-export function mapKeys<T extends object, U extends string | number | symbol>(
+export const mapValues = <T extends object, U>(obj: T, fn: MapFn<T, U>) =>
+    mapEntries(obj, ({ key, value }) => [key, fn({ key, value })]) as {
+        [K in keyof T]: U;
+    };
+
+export const mapKeys = <T extends object, U extends PropertyKey>(
     obj: T,
-    fn: (key: keyof T) => U,
-): { [K in U]: T[keyof T] } {
+    fn: MapFn<T, U>,
+) => {
     return Object.fromEntries(
-        Object.entries(obj).map(([k, v]) => [fn(k as keyof T), v]),
+        Object.entries(obj).map(
+            ([k, v]) => [fn({ key: k as keyof T, value: v as T[keyof T] }), v],
+        ),
     ) as { [K in U]: T[keyof T] };
-}
+};
 
-/**
- * Filter object entries by a predicate.
- */
-export function filterEntries<T extends object>(
+export const filterEntries = <T extends object>(
     obj: T,
-    predicate: (value: T[keyof T], key: keyof T) => boolean,
-): Partial<T> {
+    predicate: PredicateFn<T>,
+) => {
     return Object.fromEntries(
         Object.entries(obj).filter(([k, v]) =>
-            predicate(v as T[keyof T], k as keyof T)
+            predicate({ key: k as keyof T, value: v as T[keyof T] })
         ),
     ) as Partial<T>;
-}
+};
 
-/**
- * Pick specific keys from an object.
- */
-export function pick<T extends object, K extends keyof T>(
+export const findEntry = <T extends object>(
     obj: T,
-    keys: K[],
-): Pick<T, K> {
-    const result: Partial<T> = {};
-    for (const key of keys) {
-        if (key in obj) result[key] = obj[key];
-    }
-    return result as Pick<T, K>;
-}
+    predicate: PredicateFn<T>,
+) => (Object.entries(obj).find(([k, v]) =>
+    predicate({ key: k as keyof T, value: v as T[keyof T] })
+) ?? null) as [keyof T, T[keyof T]] | null;
 
-/**
- * Omit specific keys from an object.
- */
-export function omit<T extends object, K extends keyof T>(
+export const findValue = <T extends object>(
     obj: T,
-    keys: K[],
-): Omit<T, K> {
-    const result: Partial<T> = { ...obj };
-    for (const key of keys) {
-        delete result[key];
-    }
-    return result as Omit<T, K>;
-}
+    predicate: PredicateFn<T>,
+) => findEntry(obj, predicate)?.[1] ?? null;
 
-/**
- * Merge two objects deeply (shallow merge by default).
- */
-export function merge<T extends object, U extends object>(
-    target: T,
-    source: U,
-): T & U {
-    return { ...target, ...source };
-}
-
-/**
- * Check if all values in an object satisfy a predicate.
- */
-export function allValues<T extends object>(
-    obj: T,
-    predicate: (value: T[keyof T], key: keyof T) => boolean,
-): boolean {
-    return Object.entries(obj).every(([k, v]) =>
-        predicate(v as T[keyof T], k as keyof T)
-    );
-}
-
-/**
- * Map over object entries with both key and value, producing a new object.
- */
-export function mapEntries<T extends object, U>(
-    obj: T,
-    fn: (value: T[keyof T], key: keyof T) => [string, U],
-): Record<string, U> {
-    return Object.fromEntries(
-        Object.entries(obj).map(([k, v]) => fn(v as T[keyof T], k as keyof T)),
-    );
-}
+export const fillValues = <T extends object, U>(obj: T, value: U) =>
+    mapValues(obj, () => value);

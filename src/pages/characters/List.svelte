@@ -1,10 +1,10 @@
 <script lang="ts">
-    import { state } from "../lib/database.svelte";
-    import { t } from "../lib/i18n.svelte";
-    import type { ID } from "../lib/types";
-    let { projectID = $bindable() }: { projectID: ID } = $props();
+    import type { DAO } from "../../data/dao";
+    import type { Project } from "../../data/schema";
+    import { t } from "../../lib/i18n.svelte";
+    let { project = $bindable() }: { project: DAO<Project> } = $props();
 
-    let characters = $derived(state.database.projects[projectID].characters);
+    let characters = $derived(project.characters);
 </script>
 
 <h1>Characters</h1>
