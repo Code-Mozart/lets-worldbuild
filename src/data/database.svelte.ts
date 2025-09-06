@@ -1,9 +1,11 @@
+import { init } from "@paralleldrive/cuid2";
 import { t } from "../lib/i18n.svelte";
 import { makeDAO } from "./dao";
-import { cuid } from "./resource.svelte";
 import type { Project, Records } from "./schema";
 
 const localStorageKey = "lets-worldbuild/v1";
+
+export const cuid = init({ length: 8 });
 
 export interface Database {
     projects: Records<Project>;
