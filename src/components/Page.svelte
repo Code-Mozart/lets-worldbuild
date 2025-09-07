@@ -5,6 +5,7 @@
     import EditCharacter from "../pages/characters/Edit.svelte";
     import ListCharacters from "../pages/characters/List.svelte";
     import Recent from "../pages/Recent.svelte";
+    import Toasts from "./Toasts.svelte";
 
     const pages = pageMapping({
         recent: { content: Recent },
@@ -20,3 +21,4 @@
 </script>
 
 <selected.content bind:project />
+<Toasts />

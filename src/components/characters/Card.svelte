@@ -1,9 +1,13 @@
 <script lang="ts">
-    let { content } = $props();
+    import type { Snippet } from "svelte";
+
+    let { content, url }: { content: Snippet; url: string } = $props();
 </script>
 
 <li>
-    {@render content()}
+    <a href={url}>
+        {@render content()}
+    </a>
 </li>
 
 <style>
@@ -16,7 +20,7 @@
 
         background-color: var(--secondary-background-color);
         border: 1px solid var(--main-foreground-color);
-        border-radius: 1em;
+        border-radius: var(--card-corner-radius);
     }
     li:hover {
         color: var(--highlighted-foreground-color);

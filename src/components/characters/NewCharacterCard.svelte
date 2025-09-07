@@ -42,7 +42,7 @@
     </div>
 {/snippet}
 
-<Card {content} />
+<Card {content} url="#/characters/new" />
 
 <style>
     p {

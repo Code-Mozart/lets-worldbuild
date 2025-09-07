@@ -12,7 +12,7 @@
     </div>
 {/snippet}
 
-<Card {content} />
+<Card {content} url="#/characters/{character.id}/edit" />
 
 <style>
     h2 {
