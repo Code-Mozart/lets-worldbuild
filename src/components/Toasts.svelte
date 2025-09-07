@@ -4,12 +4,16 @@
     import { slide } from "svelte/transition";
 
     interface Toast {
-        content: Snippet;
+        content: Snippet<[any]>;
+        params: any;
         durationSeconds?: number;
     }
-    type DisplayedToast = Toast & { displayedAt: Date; wasHovered: boolean };
+    type DisplayedToast = Toast & {
+        displayedAt: Date;
+        wasHovered: boolean;
+    };
 
-    const showToast = (toast: Toast) => {
+    export const showToast = (toast: Toast) => {
         const displayedToast = {
             ...toast,
             displayedAt: new Date(),
@@ -23,7 +27,10 @@
         }
     };
 
-    const removeToast = (toast: DisplayedToast, skipIfHovered = false) => {
+    export const removeToast = (
+        toast: DisplayedToast,
+        skipIfHovered = false,
+    ) => {
         toasts = toasts.filter(
             (item) =>
                 item.displayedAt !== toast.displayedAt ||
@@ -32,47 +39,19 @@
     };
 
     let toasts: DisplayedToast[] = $state([]);
-
-    showToast({
-        content: exampleToast,
-        durationSeconds: 12,
-    });
-
-    setTimeout(() => {
-        showToast({
-            content: exampleToast,
-            durationSeconds: 6,
-        });
-    }, 1000 * 2);
-
-    setTimeout(() => {
-        showToast({
-            content: exampleToast2,
-        });
-    }, 1000 * 4);
 </script>
-
-{#snippet exampleToast()}
-    Hello World!
-{/snippet}
-
-{#snippet exampleToast2()}
-    Lorem ipsum dolor sit amet consectetur, adipisicing elit. Doloremque unde
-    beatae iusto enim, in, natus accusamus doloribus maxime perspiciatis vero
-    voluptate nam, obcaecati labore autem sunt deleniti. Officia, laboriosam
-    atque!
-{/snippet}
 
 <ul class="toasts">
     {#each toasts as toast, index (toast.displayedAt)}
         <li
             class="toast"
+            class:pinned={toast.wasHovered}
             animate:flip
             transition:slide
             onmouseenter={() => (toast.wasHovered = true)}
         >
             <div>
-                {@render toast.content()}
+                {@render toast.content(toast.params)}
             </div>
             <button
                 onclick={() => removeToast(toast)}
@@ -86,6 +65,11 @@
                     />
                 </svg>
             </button>
+            {#if toast.wasHovered}
+                <div class="pin">
+                    <img src="icons/pin.svg" alt="pin" />
+                </div>
+            {/if}
         </li>
     {/each}
 </ul>
@@ -121,6 +105,20 @@
         display: flex;
         flex-direction: row;
         gap: 0.5em;
+    }
+    :global(ul.toasts li.toast div.pin) {
+        position: absolute;
+        justify-self: end;
+        transform: translate(-1.7em, -1.2em);
+        padding: 0.2em;
+        margin: 0;
+        width: fit-content;
+        height: fit-content;
+        line-height: 0;
+
+        background-color: var(--secondary-background-color);
+        border: 1px solid var(--main-foreground-color);
+        border-radius: var(--card-corner-radius);
     }
     :global(ul.toasts li.toast button) {
         display: none;

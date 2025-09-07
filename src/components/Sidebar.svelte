@@ -1,25 +1,29 @@
 <script lang="ts">
     import { t } from "../lib/i18n.svelte.ts";
-    import { type Page, pageMapping } from "../lib/pages";
+    import { routes, type Route } from "../lib/routing/routes.js";
+    import { filterEntries } from "../util/objects.js";
 
-    const pages = {
-        recent: { icon: "icons/bookmark.svg" },
-        characters: { icon: "icons/group.svg" },
+    type RoutesWithSidebar<T = typeof routes> = {
+        [K in keyof T as T[K] extends { sidebar: Route<any>["sidebar"] }
+            ? K
+            : never]: T[K];
     };
+    const routesWithSidebar = filterEntries(
+        routes,
+        ({ value }) => "sidebar" in value,
+    ) as RoutesWithSidebar;
 
-    let { page = $bindable() } = $props<{ page: Page }>();
+    let { currentHash } = $props<{ currentHash: string }>();
 </script>
 
 <aside class="sidebar">
     <h1>{t("title")}</h1>
     <nav>
-        {#each Object.entries(pages) as [key, value]}
-            <a href="#/{key}" class:active={page === key}>
-                <img
-                    src={pages[key as keyof typeof pages].icon}
-                    alt="{key} icon"
-                />
-                {t(`pages.${key}`)}
+        {#each Object.entries(routesWithSidebar) as [hash, route]}
+            {@const translation = t(`sidebar.${route.sidebar.translationKey}`)}
+            <a href="#/{hash}" class:active={currentHash === hash}>
+                <img src={route.sidebar.iconPath} alt="{translation} icon" />
+                {translation}
             </a>
         {/each}
     </nav>

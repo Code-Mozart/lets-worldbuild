@@ -2,7 +2,7 @@
   import Page from "./components/Page.svelte";
   import Sidebar from "./components/Sidebar.svelte";
   import { database } from "./data/database.svelte";
-  import { router } from "./lib/router.svelte";
+  import { router } from "./lib/routing/router.svelte";
 
   let project = Object.values(database.projects.get())
     .sort((a, b) => a.updatedAt.getTime() - b.updatedAt.getTime())
@@ -10,10 +10,10 @@
 </script>
 
 <div class="app">
-  <Sidebar bind:page={router.route} />
+  <Sidebar currentHash={router.hash} />
 
   <main class="content">
-    <Page bind:page={router.route} bind:project />
+    <Page current={router} bind:project />
   </main>
 </div>
 

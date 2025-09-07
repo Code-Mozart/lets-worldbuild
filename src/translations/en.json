@@ -1,6 +1,6 @@
 {
     "title": "Let's Worldbuild",
-    "pages": {
+    "sidebar": {
         "recent": "Recent",
         "characters": "Characters"
     },

@@ -1,24 +1,36 @@
 <script lang="ts">
     import type { DAO } from "../data/dao";
     import type { Project } from "../data/schema";
-    import { pageMapping, type Page } from "../lib/pages";
-    import EditCharacter from "../pages/characters/Edit.svelte";
-    import ListCharacters from "../pages/characters/List.svelte";
-    import Recent from "../pages/Recent.svelte";
+    import type { CurrentRoute } from "../lib/routing/currentRouteType";
+    import { routes } from "../lib/routing/routes";
     import Toasts from "./Toasts.svelte";
-
-    const pages = pageMapping({
-        recent: { content: Recent },
-        characters: { content: ListCharacters },
-        editCharacter: { content: EditCharacter },
-    });
+    import NotFound from "./NotFound.svelte";
+    import { untrack } from "svelte";
 
     let {
-        page = $bindable(),
+        current,
         project = $bindable(),
-    }: { page: Page; project: DAO<Project> } = $props();
-    let selected = $derived(pages[page]);
+    }: { current: CurrentRoute; project: DAO<Project> } = $props();
+    let currentRoute = $derived(current.route ?? routes.recent);
+
+    $effect(() => {
+        if (current.route !== null) return;
+        untrack(() => {
+            toastsComponent.showToast({
+                content: notFound,
+                params: [current.hash],
+                durationSeconds: 3,
+            });
+        });
+        location.hash = "#/recent";
+    });
+
+    let toastsComponent: Toasts;
 </script>
 
-<selected.content bind:project />
-<Toasts />
+{#snippet notFound(path: string)}
+    <NotFound {path} />
+{/snippet}
+
+<currentRoute.page bind:project />
+<Toasts bind:this={toastsComponent} />

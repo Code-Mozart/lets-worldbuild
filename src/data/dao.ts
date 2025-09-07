@@ -5,7 +5,7 @@ import {
     mapEntries,
     mapValues,
 } from "../util/objects";
-import { cuid } from "./database.svelte";
+import { cuid } from "./cuid";
 import type { Entity, ID, Records, Shape } from "./schema";
 
 type NestedKeys<T> = {
@@ -91,31 +91,4 @@ export const nested = <T extends Entity>(
     };
 
     return { get, find, insert, delete: delete_ };
-};
-
-interface Foo extends Entity {
-    abc: string;
-    bars: Records<Bar>;
-}
-
-interface Bar extends Entity {
-    num: number;
-}
-
-const now = new Date();
-const foo = {
-    abc: "hello",
-    id: "foo",
-    createdAt: now,
-    updatedAt: now,
-    bars: {
-        "a": { num: 12, id: "a", createdAt: now, updatedAt: now },
-        "b": { num: 2, id: "b", createdAt: now, updatedAt: now },
-    },
-};
-const fooShape: Shape<Foo> = {
-    abc: null,
-    bars: {
-        num: null,
-    },
 };
