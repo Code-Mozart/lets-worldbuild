@@ -8,6 +8,7 @@
     } from "../../data/database.svelte.js";
 
     let { project = $bindable(), id, showToast } = $props();
+    const isNew = !Boolean(id);
 
     const createNew = () => {
         const record = createRecord(
@@ -17,8 +18,9 @@
             { existing: project.characters },
         );
         project.characters[record.id] = record;
-        return record;
+        return project.characters[record.id];
     };
+
     const load = (id) => {
         const record = project.characters[id];
 
@@ -33,6 +35,11 @@
         return record;
     };
 
+    const onDelete = () => {
+        delete project.characters[character.id];
+        location.hash = "#/characters";
+    };
+
     const discardEmpty = () => {
         const predicate = ({ key, value }) =>
             !recordProperties.includes(key) && Boolean(value);
@@ -40,7 +47,7 @@
 
         delete project.characters[character.id];
     };
-    if (!id) onDestroy(discardEmpty);
+    if (isNew) onDestroy(discardEmpty);
 
     const updateTimestamp = () => {
         character.updatedAt = new Date();
@@ -53,8 +60,14 @@
     Character with id '{id}' not found.
 {/snippet}
 
-<div class="title-bar">
+<div class="titlebar">
     <h1>{t(`pages.characters.${id ? "edit" : "new"}.title`)}</h1>
+    <button onclick={onDelete}>
+        <img src="icons/bin.svg" alt="bin icon" />
+        <span>
+            {t(`pages.$resource.edit.${isNew ? "discard" : "delete"}`)}
+        </span>
+    </button>
 </div>
 <form onsubmit={(e) => e.preventDefault()}>
     <input
@@ -71,6 +84,25 @@
 </p>
 
 <style>
+    .titlebar {
+        display: flex;
+        flex-direction: row;
+    }
+    .titlebar h1 {
+        margin-right: auto;
+    }
+    .titlebar button {
+        height: min-content;
+        margin-bottom: 1em;
+
+        display: flex;
+        flex-direction: row;
+        gap: 0.5em;
+        align-items: center;
+    }
+    .titlebar h1 {
+        margin-right: auto;
+    }
     form {
         display: grid;
     }

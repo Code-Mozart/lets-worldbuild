@@ -15,6 +15,12 @@
         }
     },
     "pages": {
+        "$resource": {
+            "edit": {
+                "discard": "Discard",
+                "delete": "Delete"
+            }
+        },
         "characters": {
             "new": { "title": "Create Character" },
             "edit": { "title": "Edit Character" },
