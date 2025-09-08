@@ -27,7 +27,7 @@ export const t = (key, args = {}) => {
 const resolve = (template, args) =>
     Object.entries(args).reduce(
         (acc, [placeholder, value]) =>
-            acc.replaceAll(`\\{${placeholder}\\}`, String(value)),
+            acc.replaceAll(RegExp(`\\{${placeholder}\\}`, "g"), String(value)),
         template,
     );
 

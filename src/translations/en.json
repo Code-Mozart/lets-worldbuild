@@ -10,7 +10,11 @@
     "models": {
         "character": {
             "attributes": {
-                "name": "Name"
+                "firstName": "First name",
+                "familyName": "Family Name",
+                "titles": "Titles",
+                "dateOfBirth": "Date of birth",
+                "dateOfDeath": "Date of death"
             }
         }
     },
@@ -25,7 +29,9 @@
             "new": { "title": "Create Character" },
             "edit": { "title": "Edit Character" },
             "list": {
-                "add": "Add a new character"
+                "add": "Add a new character",
+                "onlyDateOfBirth": "*{from}",
+                "onlyDateOfDeath": "†{until}"
             }
         }
     }

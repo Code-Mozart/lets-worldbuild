@@ -29,5 +29,9 @@
     li a {
         padding: 0.8em;
         flex: 1;
+
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
     }
 </style>

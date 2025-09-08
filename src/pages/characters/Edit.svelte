@@ -13,7 +13,11 @@
     const createNew = () => {
         const record = createRecord(
             {
-                name: "",
+                firstName: "",
+                familyName: "",
+                titles: "",
+                dateOfBirth: "",
+                dateOfDeath: "",
             },
             { existing: project.characters },
         );
@@ -54,6 +58,14 @@
     };
 
     let character = $state((id && load(id)) ?? createNew());
+
+    const attributes = {
+        firstName: {},
+        familyName: {},
+        titles: {},
+        dateOfBirth: {},
+        dateOfDeath: {},
+    };
 </script>
 
 {#snippet notFound(id)}
@@ -70,18 +82,19 @@
     </button>
 </div>
 <form onsubmit={(e) => e.preventDefault()}>
-    <input
-        type="text"
-        name="name"
-        id="lets-worldbuild-character-name"
-        placeholder={t("models.character.attributes.name")}
-        bind:value={character.name}
-        oninput={updateTimestamp}
-    />
+    {#each Object.keys(attributes) as attribute}
+        <label for={attribute}
+            >{t(`models.character.attributes.${attribute}`)}</label
+        >
+        <input
+            type="text"
+            name={attribute}
+            id="lets-worldbuild-character-{attribute}"
+            bind:value={character[attribute]}
+            oninput={updateTimestamp}
+        />
+    {/each}
 </form>
-<p>
-    Name: {JSON.stringify(character)}
-</p>
 
 <style>
     .titlebar {
@@ -105,6 +118,12 @@
     }
     form {
         display: grid;
+        gap: 1em;
+        grid-template-columns: auto 1fr;
+        align-items: center;
+    }
+    label {
+        text-align: end;
     }
     form input {
         flex: auto 1 0;
