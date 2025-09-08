@@ -1,11 +1,9 @@
 import { routes } from "./routes";
 import { parsePath, solvePath } from "./solver";
 
-export let router = $state({
-    route: routes.recent,
-    hash: "recent",
-    params: {},
-});
+export let router = $state(
+    solvePath(Object.keys(routes), parsePath(location.hash)),
+);
 
 window.addEventListener("hashchange", () => {
     const parsed = parsePath(location.hash || "#/recent");

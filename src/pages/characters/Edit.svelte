@@ -1,13 +1,26 @@
 <script>
-    import { onDestroy } from "svelte";
+    import { onDestroy, untrack } from "svelte";
     import { t } from "../../lib/i18n.svelte.js";
     import { some } from "../../util/objects.js";
+    import {
+        createRecord,
+        recordProperties,
+    } from "../../data/database.svelte.js";
 
-    let { project = $bindable(), showToast, id } = $props();
+    let { project = $bindable(), id, showToast } = $props();
 
-    const newCharacter = { name: "" };
-    const loadCharacter = (id) => {
-        const record = project.characters.find(id);
+    const createNew = () => {
+        const record = createRecord(
+            {
+                name: "",
+            },
+            { existing: project.characters },
+        );
+        project.characters[record.id] = record;
+        return record;
+    };
+    const load = (id) => {
+        const record = project.characters[id];
 
         if (!record) {
             showToast({
@@ -16,30 +29,33 @@
                 durationSeconds: 5,
             });
             location.hash = "#/recent";
-        } else {
-            record.updatedAt = new Date();
-            console.log("should update now");
         }
         return record;
     };
 
-    const saveCharacter = () => {
-        if (character.id) {
-        } else {
-            if (!some(character, ({ value }) => Boolean(value))) return;
-            project.characters.insert(character);
-        }
-    };
-    onDestroy(saveCharacter);
+    const discardEmpty = () => {
+        const predicate = ({ key, value }) =>
+            !recordProperties.includes(key) && Boolean(value);
+        if (some(character, predicate)) return;
 
-    let character = $state((id ? loadCharacter(id) : null) ?? newCharacter);
+        delete project.characters[character.id];
+    };
+    if (!id) onDestroy(discardEmpty);
+
+    const updateTimestamp = () => {
+        character.updatedAt = new Date();
+    };
+
+    let character = $state((id && load(id)) ?? createNew());
 </script>
 
 {#snippet notFound(id)}
     Character with id '{id}' not found.
 {/snippet}
 
-<h1>New Character</h1>
+<div class="title-bar">
+    <h1>{t(`pages.characters.${id ? "edit" : "new"}.title`)}</h1>
+</div>
 <form onsubmit={(e) => e.preventDefault()}>
     <input
         type="text"
@@ -47,6 +63,7 @@
         id="lets-worldbuild-character-name"
         placeholder={t("models.character.attributes.name")}
         bind:value={character.name}
+        oninput={updateTimestamp}
     />
 </form>
 <p>

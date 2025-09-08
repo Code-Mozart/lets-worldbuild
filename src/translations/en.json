@@ -16,6 +16,8 @@
     },
     "pages": {
         "characters": {
+            "new": { "title": "Create Character" },
+            "edit": { "title": "Edit Character" },
             "list": {
                 "add": "Add a new character"
             }

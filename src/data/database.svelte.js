@@ -1,24 +1,39 @@
 import { t } from "../lib/i18n.svelte";
 import { cuid } from "./cuid";
-import { makeDAO } from "./dao";
-import { projectShape } from "./schema";
 
 const localStorageKey = "lets-worldbuild/v1";
 
-export const databaseShape = {
-    projects: projectShape,
+const createNewID = (existing) => {
+    const maxAttempts = 5;
+    for (let attempt = 0; attempt < maxAttempts; attempt++) {
+        const id = cuid();
+        if (!(id in existing)) return id;
+        console.warn(
+            `ID '${id}' collided with existing ids. This should most likely never happen!`,
+        );
+    }
+    throw new Error(
+        `Could not create a new unique ID in ${maxAttempts} attempts`,
+    );
 };
 
-export const createInitialProject = () => {
+export const recordProperties = ["id", "createdAt", "updatedAt"];
+export const createRecord = (properties, { existing }) => {
+    const id = createNewID(existing);
     const now = new Date();
     return {
-        id: cuid(),
+        id,
         createdAt: now,
         updatedAt: now,
-        name: t("gettingStarted.firstProjectName"),
-        characters: {},
+        ...properties,
     };
 };
+
+export const createInitialProject = () =>
+    createRecord({
+        name: t("gettingStarted.firstProjectName"),
+        characters: {},
+    });
 
 export const createEmptyDatabase = () => {
     return { projects: {} };
@@ -47,6 +62,7 @@ class DatabaseInitiator {
     constructor() {
         this.database = $state(loadLocalStorage());
         $effect.root(() => {
+            $inspect("database", this.database);
             $effect(() => {
                 const current = loadLocalStorage(createEmptyDatabase);
                 this.database = { ...current, ...this.database };
@@ -57,10 +73,6 @@ class DatabaseInitiator {
             });
         });
     }
-
-    get dataAccessor() {
-        return makeDAO(this.database, databaseShape);
-    }
 }
 
-export const database = new DatabaseInitiator().dataAccessor;
+export const database = new DatabaseInitiator().database;

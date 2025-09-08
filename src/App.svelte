@@ -4,9 +4,12 @@
   import { database } from "./data/database.svelte";
   import { router } from "./lib/routing/router.svelte";
 
-  let project = Object.values(database.projects.get())
-    .sort((a, b) => a.updatedAt.getTime() - b.updatedAt.getTime())
-    .at(0);
+  const getProjectID = () =>
+    Object.values(database.projects)
+      .sort((a, b) => a.updatedAt.getTime() - b.updatedAt.getTime())
+      .at(0).id;
+  let project = $state(database.projects[getProjectID()]);
+  $inspect(project);
 </script>
 
 <div class="app">
