@@ -12,7 +12,7 @@
 
 <style>
     li {
-        padding: 0.8em;
+        padding: 0em;
         cursor: pointer;
 
         display: flex;
@@ -27,5 +27,9 @@
         background-color: var(--main-background-color);
         border: 3px solid var(--highlighted-foreground-color);
         font-weight: bold;
+    }
+    li a {
+        padding: 0.8em;
+        flex: 1;
     }
 </style>

@@ -7,6 +7,7 @@ import {
     mapEntries,
     mapKeys,
     mapValues,
+    some,
 } from "./objects";
 
 const obj = {
@@ -94,6 +95,29 @@ describe("mapKeys", () => {
             ).toEqual(
                 { aa: 1, bb: 2, cc: 3 },
             ));
+    });
+});
+
+describe("some", () => {
+    describe("when passing an empty object", () => {
+        it("returns false", () =>
+            expect(
+                some({}, () => true),
+            ).toBeFalsy());
+    });
+
+    describe("when no entries match", () => {
+        it("returns false", () =>
+            expect(
+                some(obj, ({ value }) => value > 10),
+            ).toBeFalsy());
+    });
+
+    describe("when at least 1 entry matches", () => {
+        it("returns true", () =>
+            expect(
+                some(obj, ({ key }) => key === "a"),
+            ).toBeTruthy());
     });
 });
 

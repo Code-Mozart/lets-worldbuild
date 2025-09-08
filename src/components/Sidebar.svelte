@@ -69,9 +69,6 @@
     }
 
     @media (prefers-color-scheme: dark) {
-        img {
-            filter: invert();
-        }
         .active:not(:hover) img {
             filter: none;
         }

@@ -47,6 +47,15 @@ export const filterEntries = <T extends object>(
     ) as Partial<T>;
 };
 
+export const some = <T extends object>(
+    obj: T,
+    predicate: PredicateFn<T>,
+) => {
+    return Object.entries(obj).some(([k, v]) =>
+        predicate({ key: k as keyof T, value: v as T[keyof T] })
+    );
+};
+
 export const findEntry = <T extends object>(
     obj: T,
     predicate: PredicateFn<T>,

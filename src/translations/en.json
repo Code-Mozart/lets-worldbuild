@@ -7,9 +7,18 @@
     "gettingStarted": {
         "firstProjectName": "My first project"
     },
-    "actions": {
+    "models": {
+        "character": {
+            "attributes": {
+                "name": "Name"
+            }
+        }
+    },
+    "pages": {
         "characters": {
-            "add": "Add a new character"
+            "list": {
+                "add": "Add a new character"
+            }
         }
     }
 }

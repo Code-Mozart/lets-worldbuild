@@ -6,14 +6,16 @@ import {
     mapValues,
 } from "../util/objects";
 import { cuid } from "./cuid";
-import type { Entity, ID, Records, Shape } from "./schema";
+import type {
+    Entity,
+    ID,
+    LeafKeys,
+    NestedKeys,
+    Properties,
+    Records,
+    Shape,
+} from "./schema";
 
-type NestedKeys<T> = {
-    [K in keyof T as T[K] extends Records<unknown> ? K : never]: T[K];
-};
-type LeafKeys<T> = {
-    [K in keyof T as T[K] extends Records<unknown> ? never : K]: T[K];
-};
 type NestedEntity<T, K extends keyof T> = T[K] extends
     Records<infer U extends Entity> ? U : never;
 
@@ -30,29 +32,20 @@ export const makeDAO = <T extends Record<keyof T, Records<Entity> | unknown>>(
 ) => {
     return mapEntries(
         obj,
-        ({ key, value: property }) => [
-            key,
-            isNestedRecords(property)
-                ? nested(property, shape[key as keyof Omit<T, keyof Entity>]!)
-                : property,
-        ],
+        ({ key, value: property }) => {
+            const propertyShape = shape[key as keyof Omit<T, keyof Entity>];
+            const accessor = isNested(property, propertyShape)
+                ? nested(property, propertyShape!)
+                : property;
+            return [key, accessor];
+        },
     ) as Record<string, unknown> as DAO<T>;
 };
 
-export const isEntityRow = <T extends Entity>(
-    value: T | NonNullable<unknown>,
-): value is T =>
-    typeof value === "object" &&
-    "id" in value &&
-    "createdAt" in value &&
-    "updatedAt" in value;
-
-export const isNestedRecords = <T extends Entity>(
-    value: Records<T> | unknown,
-): value is Records<T> =>
-    !!value &&
-    typeof value === "object" &&
-    Object.values(value).every(isEntityRow);
+export const isNested = <T extends Entity>(
+    value: unknown,
+    shape: Shape<T> | null | undefined,
+): value is Records<T> => shape !== null && shape !== undefined;
 
 export const nested = <T extends Entity>(
     records: Records<T>,
@@ -63,7 +56,7 @@ export const nested = <T extends Entity>(
         const record = findValue(records, ({ key }) => key === id);
         return record === null ? null : makeDAO(record, shape);
     };
-    const insert = (properties: Omit<LeafKeys<T>, keyof Entity>) => {
+    const insert = (properties: Properties<T>) => {
         const id = cuid();
         if (id in records) {
             throw Error(

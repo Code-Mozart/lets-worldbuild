@@ -20,11 +20,16 @@
 <style>
   .app {
     display: flex;
+    width: 100%;
     height: 100%;
   }
   .content {
-    flex: auto 1 0;
+    flex: auto 1 1;
     padding: 2rem;
-    overflow: auto;
+    overflow-x: clip;
+    overflow-y: auto;
+
+    display: flex;
+    flex-direction: column;
   }
 </style>

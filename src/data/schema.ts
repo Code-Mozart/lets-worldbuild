@@ -5,6 +5,14 @@ export type Shape<T> = {
         : null;
 };
 
+export type NestedKeys<T> = {
+    [K in keyof T as T[K] extends Records<unknown> ? K : never]: T[K];
+};
+export type LeafKeys<T> = {
+    [K in keyof T as T[K] extends Records<unknown> ? never : K]: T[K];
+};
+export type Properties<T> = Omit<LeafKeys<T>, keyof Entity>;
+
 export type ID = string;
 
 export interface Entity {

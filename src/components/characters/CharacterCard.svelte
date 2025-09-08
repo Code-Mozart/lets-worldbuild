@@ -3,7 +3,7 @@
     import type { Character } from "../../data/schema";
     import Card from "./Card.svelte";
 
-    let { character = $bindable() }: { character: DAO<Character> } = $props();
+    let { character }: { character: DAO<Character> } = $props();
 </script>
 
 {#snippet content()}

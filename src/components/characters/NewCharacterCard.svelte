@@ -38,7 +38,7 @@
                 stroke-linecap="round"
             />
         </svg>
-        <p>{t("actions.characters.add")}</p>
+        <p>{t("pages.characters.list.add")}</p>
     </div>
 {/snippet}
 

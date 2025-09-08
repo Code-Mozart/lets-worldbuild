@@ -25,6 +25,7 @@ a {
   color: inherit;
   text-decoration: inherit;
 }
+
 a:hover {
   color: var(--highlighted-foreground-color);
 }
@@ -64,12 +65,27 @@ button {
   cursor: pointer;
   transition: border-color 0.25s;
 }
+
 button:hover {
   border-color: var(--highlighted-foreground-color);
 }
+
 button:focus,
 button:focus-visible {
   outline: 4px auto -webkit-focus-ring-color;
+}
+
+form {
+  display: flex;
+  flex-direction: column;
+  align-items: start;
+}
+
+input {
+  padding: 0.5em 1em;
+  font-size: 1em;
+  border: 1px solid var(--main-foreground-color);
+  border-radius: var(--card-corner-radius);
 }
 
 @media (prefers-color-scheme: light) {
@@ -79,5 +95,11 @@ button:focus-visible {
     --secondary-background-color: #e5e1d5;
     --secondary-foreground-color: #5c493c;
     --highlighted-foreground-color: #855e42;
+  }
+}
+
+@media(prefers-color-scheme: dark) {
+  img {
+    filter: invert();
   }
 }

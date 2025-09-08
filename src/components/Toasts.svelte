@@ -1,19 +1,13 @@
 <script lang="ts">
-    import type { Snippet } from "svelte";
-    import { flip } from "svelte/animate";
     import { slide } from "svelte/transition";
+    import type { ShowToast, Toast } from "../lib/toastsInterface";
 
-    interface Toast {
-        content: Snippet<[any]>;
-        params: any;
-        durationSeconds?: number;
-    }
     type DisplayedToast = Toast & {
         displayedAt: Date;
         wasHovered: boolean;
     };
 
-    export const showToast = (toast: Toast) => {
+    export const showToast: ShowToast = (toast: Toast) => {
         const displayedToast = {
             ...toast,
             displayedAt: new Date(),
@@ -46,8 +40,7 @@
         <li
             class="toast"
             class:pinned={toast.wasHovered}
-            animate:flip
-            transition:slide
+            transition:slide={{ duration: 200 }}
             onmouseenter={() => (toast.wasHovered = true)}
         >
             <div>

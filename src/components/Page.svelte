@@ -6,12 +6,17 @@
     import Toasts from "./Toasts.svelte";
     import NotFound from "./NotFound.svelte";
     import { untrack } from "svelte";
+    import type { ShowToast, Toast } from "../lib/toastsInterface";
 
     let {
         current,
         project = $bindable(),
     }: { current: CurrentRoute; project: DAO<Project> } = $props();
     let currentRoute = $derived(current.route ?? routes.recent);
+
+    let showToast: ShowToast = (toast: Toast) => {
+        toastsComponent.showToast(toast);
+    };
 
     $effect(() => {
         if (current.route !== null) return;
@@ -32,5 +37,11 @@
     <NotFound {path} />
 {/snippet}
 
-<currentRoute.page bind:project />
+<currentRoute.page
+    bind:project
+    {...{
+        showToast,
+        ...current.params,
+    }}
+/>
 <Toasts bind:this={toastsComponent} />

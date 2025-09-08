@@ -12,7 +12,7 @@
 <ul class="grid">
     <NewCharacterCard />
     {#each Object.values(characters) as character}
-        <CharacterCard bind:character={characters[character.id]} />
+        <CharacterCard {character} />
     {/each}
 </ul>
 

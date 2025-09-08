@@ -30,7 +30,7 @@ export const routes = defineRoutes({
             iconPath: "icons/group.svg",
         },
     },
-    // "characters/new": { page: EditCharacter },
+    "characters/new": { page: EditCharacter },
     "characters/{id}/edit": { page: EditCharacter },
 });
 export type RouteHash = keyof typeof routes;
