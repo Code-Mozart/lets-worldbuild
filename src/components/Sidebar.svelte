@@ -1,19 +1,14 @@
-<script lang="ts">
-    import { t } from "../lib/i18n.svelte.ts";
-    import { routes, type Route } from "../lib/routing/routes.js";
+<script>
+    import { t } from "../lib/i18n.svelte.js";
+    import { routes } from "../lib/routing/routes.js";
     import { filterEntries } from "../util/objects.js";
 
-    type RoutesWithSidebar<T = typeof routes> = {
-        [K in keyof T as T[K] extends { sidebar: Route<any>["sidebar"] }
-            ? K
-            : never]: T[K];
-    };
     const routesWithSidebar = filterEntries(
         routes,
         ({ value }) => "sidebar" in value,
-    ) as RoutesWithSidebar;
+    );
 
-    let { currentHash } = $props<{ currentHash: string }>();
+    let { currentHash } = $props();
 </script>
 
 <aside class="sidebar">

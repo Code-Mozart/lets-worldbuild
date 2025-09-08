@@ -1,5 +1,5 @@
 <script lang="ts">
-    import { t } from "../../lib/i18n.svelte.ts";
+    import { t } from "../../lib/i18n.svelte.js";
     import Card from "./Card.svelte";
 </script>
 

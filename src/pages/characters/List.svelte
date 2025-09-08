@@ -1,9 +1,7 @@
-<script lang="ts">
+<script>
     import CharacterCard from "../../components/characters/CharacterCard.svelte";
     import NewCharacterCard from "../../components/characters/NewCharacterCard.svelte";
-    import type { DAO } from "../../data/dao";
-    import type { Project } from "../../data/schema";
-    let { project = $bindable() }: { project: DAO<Project> } = $props();
+    let { project = $bindable() } = $props();
 
     let characters = $derived(project.characters.get());
 </script>

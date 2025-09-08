@@ -1,21 +1,8 @@
-import type { Component } from "svelte";
 import Recent from "../../pages/Recent.svelte";
 import ListCharacters from "../../pages/characters/List.svelte";
 import EditCharacter from "../../pages/characters/Edit.svelte";
 
-export interface Route<TComponent extends Component> {
-    page: TComponent;
-    sidebar?: {
-        translationKey: string;
-        iconPath: string;
-    };
-}
-
-const defineRoutes = <T extends Record<string, Route<Component<any>>>>(
-    arg: T,
-) => arg;
-
-export const routes = defineRoutes({
+export const routes = {
     "recent": {
         page: Recent,
         sidebar: {
@@ -32,5 +19,4 @@ export const routes = defineRoutes({
     },
     "characters/new": { page: EditCharacter },
     "characters/{id}/edit": { page: EditCharacter },
-});
-export type RouteHash = keyof typeof routes;
+};

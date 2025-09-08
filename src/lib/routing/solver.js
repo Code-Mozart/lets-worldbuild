@@ -2,34 +2,15 @@ import { partition } from "../../util/arrays";
 import { unreachable } from "../../util/errors";
 import { RoutingError } from "./error";
 
-export interface Solution<T extends string[]> {
-    route: T[number] | null;
-    params: Record<string, string>;
-}
-
-export interface SolverOption<T extends string> {
-    full: T;
-    parts: ({
-        type: "static";
-        text: string;
-    } | {
-        type: "placeholder";
-        placeholder: string;
-    })[];
-}
-
 const variableRegex = /\{[\w\-]+\}/;
 
-export const parsePath = <T extends string[]>(path: string) => {
+export const parsePath = (path) => {
     if (path.startsWith("#")) path = path.slice(1);
     if (path.startsWith("/")) path = path.slice(1);
     return path;
 };
 
-export const solvePath = <T extends string[]>(
-    routes: T,
-    parsed: string,
-): Solution<T> => {
+export const solvePath = (routes, parsed) => {
     const parts = parsed.split("/");
     let options = parseRoutes(routes).filter((option) =>
         option.parts.length === parts.length
@@ -38,7 +19,7 @@ export const solvePath = <T extends string[]>(
         return noRoute(parsed);
     }
 
-    const params = {} as Record<string, Record<string, string>>;
+    const params = {};
     parts.forEach((part, i) => {
         const { directMatches, placeholderMatches } = partition(
             options,
@@ -79,9 +60,7 @@ export const solvePath = <T extends string[]>(
     return noRoute(parsed);
 };
 
-export const parseRoutes = <T extends string[]>(
-    routes: T,
-): SolverOption<T[number]>[] =>
+export const parseRoutes = (routes) =>
     routes
         .map((option) => ({
             full: option,
@@ -99,9 +78,7 @@ export const parseRoutes = <T extends string[]>(
                 ),
         }));
 
-export const noRoute = (
-    path: string,
-) => {
+export const noRoute = (path) => {
     console.warn(`Page ${path} not found`);
     return { route: null, params: {} };
 };

@@ -1,8 +1,7 @@
 import { routes } from "./routes";
 import { parsePath, solvePath } from "./solver";
-import type { CurrentRoute } from "./currentRouteType";
 
-export let router: CurrentRoute = $state({
+export let router = $state({
     route: routes.recent,
     hash: "recent",
     params: {},
@@ -11,9 +10,9 @@ export let router: CurrentRoute = $state({
 window.addEventListener("hashchange", () => {
     const parsed = parsePath(location.hash || "#/recent");
     const result = solvePath(
-        Object.keys(routes) as (keyof typeof routes)[],
+        Object.keys(routes),
         parsed,
-    )!;
+    );
     router.params = result.params;
     router.hash = result.route ?? parsed;
     router.route = result.route === null ? null : routes[result.route];

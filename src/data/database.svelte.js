@@ -1,14 +1,11 @@
 import { t } from "../lib/i18n.svelte";
 import { cuid } from "./cuid";
 import { makeDAO } from "./dao";
-import { type Project, projectShape, type Records, type Shape } from "./schema";
+import { projectShape } from "./schema";
 
 const localStorageKey = "lets-worldbuild/v1";
 
-export interface Database {
-    projects: Records<Project>;
-}
-export const databaseShape: Shape<Database> = {
+export const databaseShape = {
     projects: projectShape,
 };
 
@@ -41,11 +38,11 @@ export const loadLocalStorage = (
 ) => {
     const raw = localStorage.getItem(localStorageKey);
     if (raw === null) return fallback();
-    return JSON.parse(raw) as Database;
+    return JSON.parse(raw);
 };
 
 class DatabaseInitiator {
-    database: Database;
+    database;
 
     constructor() {
         this.database = $state(loadLocalStorage());

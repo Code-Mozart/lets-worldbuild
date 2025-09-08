@@ -1,13 +1,7 @@
-<script lang="ts">
+<script>
     import { slide } from "svelte/transition";
-    import type { ShowToast, Toast } from "../lib/toastsInterface";
 
-    type DisplayedToast = Toast & {
-        displayedAt: Date;
-        wasHovered: boolean;
-    };
-
-    export const showToast: ShowToast = (toast: Toast) => {
+    export const showToast = (toast) => {
         const displayedToast = {
             ...toast,
             displayedAt: new Date(),
@@ -21,10 +15,7 @@
         }
     };
 
-    export const removeToast = (
-        toast: DisplayedToast,
-        skipIfHovered = false,
-    ) => {
+    export const removeToast = (toast, skipIfHovered = false) => {
         toasts = toasts.filter(
             (item) =>
                 item.displayedAt !== toast.displayedAt ||
@@ -32,7 +23,7 @@
         );
     };
 
-    let toasts: DisplayedToast[] = $state([]);
+    let toasts = $state([]);
 </script>
 
 <ul class="toasts">

@@ -1,7 +1,5 @@
-<script lang="ts">
-    import type { Snippet } from "svelte";
-
-    let { content, url }: { content: Snippet; url: string } = $props();
+<script>
+    let { content, url } = $props();
 </script>
 
 <li>

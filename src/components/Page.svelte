@@ -1,20 +1,13 @@
-<script lang="ts">
-    import type { DAO } from "../data/dao";
-    import type { Project } from "../data/schema";
-    import type { CurrentRoute } from "../lib/routing/currentRouteType";
+<script>
     import { routes } from "../lib/routing/routes";
     import Toasts from "./Toasts.svelte";
     import NotFound from "./NotFound.svelte";
     import { untrack } from "svelte";
-    import type { ShowToast, Toast } from "../lib/toastsInterface";
 
-    let {
-        current,
-        project = $bindable(),
-    }: { current: CurrentRoute; project: DAO<Project> } = $props();
+    let { current, project = $bindable() } = $props();
     let currentRoute = $derived(current.route ?? routes.recent);
 
-    let showToast: ShowToast = (toast: Toast) => {
+    let showToast = (toast) => {
         toastsComponent.showToast(toast);
     };
 
@@ -30,10 +23,10 @@
         location.hash = "#/recent";
     });
 
-    let toastsComponent: Toasts;
+    let toastsComponent;
 </script>
 
-{#snippet notFound(path: string)}
+{#snippet notFound(path)}
     <NotFound {path} />
 {/snippet}
 

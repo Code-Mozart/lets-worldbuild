@@ -1,9 +1,7 @@
-<script lang="ts">
-    import type { DAO } from "../../data/dao";
-    import type { Character } from "../../data/schema";
+<script>
     import Card from "./Card.svelte";
 
-    let { character }: { character: DAO<Character> } = $props();
+    let { character } = $props();
 </script>
 
 {#snippet content()}
