@@ -1,0 +1,32 @@
+{
+    "title": "Let's Worldbuild",
+    "sidebar": {
+        "recent": "Recent",
+        "characters": "Characters"
+    },
+    "gettingStarted": {
+        "firstProjectName": "My first project"
+    },
+    "models": {
+        "character": {
+            "attributes": {
+                "name": "Name"
+            }
+        }
+    },
+    "pages": {
+        "$resource": {
+            "edit": {
+                "discard": "Discard",
+                "delete": "Delete"
+            }
+        },
+        "characters": {
+            "new": { "title": "Create Character" },
+            "edit": { "title": "Edit Character" },
+            "list": {
+                "add": "Add a new character"
+            }
+        }
+    }
+}
